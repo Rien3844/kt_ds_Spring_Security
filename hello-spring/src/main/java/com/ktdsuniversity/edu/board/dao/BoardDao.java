@@ -16,4 +16,8 @@ public interface BoardDao {
 
 	int insertNewBoard(WriteVO writeVO);
 
+	BoardVO selectBoardById(String articleId);
+
+	int updateViewCntIncreaseById(String articleId);
+
 }

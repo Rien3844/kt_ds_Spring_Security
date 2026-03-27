@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.ktdsuniversity.edu.board.service.BoardService;
@@ -60,6 +60,24 @@ public class BoardController {
 		// redirect: 브라우저에게 다음 End Point를 요청하도록 지시.
 		// redirect:/ ==> 브라우저에게 "/" endpoint 로 이동하도록 지시.
 		return "redirect:/";
+	}
+	
+	// 게시글 내용 조회.
+	// endpoint ==> /view/게시글아이디 예> /view/BO-20260327-000001
+	// 해야 하는 역할
+	//  1. 게시글 내용을 조회해서 브라우저에게 노출.
+	//  2. 조회수 1증가.
+	@GetMapping("/view/{articleId}")
+	public String viewDetailPage(Model model, 
+			@PathVariable String articleId) {
+		
+		// articleId로 데이터베이스에서 게시글을 조회한다.
+		// 조회할 때 조회수가 하나 증가해야 한다.
+		BoardVO findResult = this.boardService.findBoardByArticleId(articleId);
+		
+		model.addAttribute("article", findResult);
+		
+		return "board/view";
 	}
 	
 }

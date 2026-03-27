@@ -21,15 +21,19 @@ public class BoardServiceImpl implements BoardService {
 	
 	@Override
 	public SearchResultVO findAllBoard() {
+		SearchResultVO result = new SearchResultVO();
+		
 		// 게시글 개수 조회. ==> 1
 		int count = this.boardDao.selectBoardCount();
+		result.setCount(count);
+
+		if (count == 0) {
+			return result;
+		}
 		
 		// 게시글 목록 조회. ==> [BoardVO]
 		List<BoardVO> list = this.boardDao.selectBoardList();
-		
-		SearchResultVO result = new SearchResultVO();
 		result.setResult(list);
-		result.setCount(count);
 		
 		return result;
 	}
@@ -45,6 +49,25 @@ public class BoardServiceImpl implements BoardService {
 		int insertCount = this.boardDao.insertNewBoard(writeVO);
 		System.out.println("생성된 게시글의 개수? " + insertCount);
 		return insertCount == 1;
+	}
+
+	@Override
+	public BoardVO findBoardByArticleId(String articleId) {
+		// 1. 조회수 증가.
+		int updateCount = this.boardDao.updateViewCntIncreaseById(articleId);
+		System.out.println("조회수가 증가된 게시글의 수: " + updateCount);
+		
+		if (updateCount == 0) {
+			// 존재하지 않는 게시글을 조회하려 했다.
+			return null;
+//			throw new RuntimeException("존재하지 않는 게시글입니다.");
+		}
+		
+		// 2. 게시글 조회.
+		BoardVO board = this.boardDao.selectBoardById(articleId);
+		
+		// 조회한 게시글을 반환.
+		return board;
 	}
 
 }
