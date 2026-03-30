@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
   <head>
@@ -32,7 +31,7 @@ pageEncoding="UTF-8"%>
       <div>${article.originFileName}</div>
 
       <span>내용</span>
-      <!-- <pre> ==> Presentation -->
+      <%-- <pre > ==> Presentation --%>
       <pre>${article.content}</pre>
 
       <div class="btn-group">

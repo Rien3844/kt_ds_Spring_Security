@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
   <head>
@@ -9,7 +8,7 @@ pageEncoding="UTF-8"%>
   </head>
   <body>
     <h1>게시글 작성</h1>
-    <!-- action ==> form 내부의 value를 전송할 엔드포인트 -->
+    <%-- action ==> form 내부의 value를 전송할 엔드포인트 --%>
     <form method="post" action="/write">
       <div class="grid write">
         <label for="subject">제목</label>

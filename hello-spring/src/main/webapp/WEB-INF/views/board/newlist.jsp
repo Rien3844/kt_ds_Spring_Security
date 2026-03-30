@@ -1,12 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
     <title>게시글 목록</title>
-    <link rel="stylesheet" type="text/css" href="/css/hello-spring.css">
+    <link rel="stylesheet" type="text/css" href="/css/hello-spring.css" />
   </head>
   <body>
     <div class="grid list">
@@ -25,7 +24,7 @@ pageEncoding="UTF-8"%>
         </li>
         <c:choose>
           <c:when test="${not empty searchResult}">
-            <!-- searchResult가 존재하면, 반복하여 데이터를 보여주고 -->
+            <%-- searchResult가 존재하면, 반복하여 데이터를 보여주고 --%>
             <li class="body">
               <c:forEach items="${searchResult}" var="board">
                 <ul class="body-item">
@@ -42,14 +41,14 @@ pageEncoding="UTF-8"%>
             </li>
           </c:when>
           <c:otherwise>
-            <!-- searchResult가 존재하지 않으면, "검색된 데이터가 없습니다"를 보여주고 -->
+            <%-- searchResult가 존재하지 않으면, "검색된 데이터가 없습니다"를 보여주고 --%>
             <li class="footer">
               <ul class="footer-item">
                 <li class="center">검색된 데이터가 없습니다.</li>
               </ul>
             </li>
           </c:otherwise>
-          </c:choose>
+        </c:choose>
       </ul>
 
       <div class="btn-group">

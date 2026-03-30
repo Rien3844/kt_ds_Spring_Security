@@ -1,12 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
     <title>회원 목록</title>
-    <link rel="stylesheet" type="text/css" href="/css/hello-spring.css">
+    <link rel="stylesheet" type="text/css" href="/css/hello-spring.css" />
   </head>
   <body>
     <div class="grid member-list">
@@ -28,19 +27,19 @@ pageEncoding="UTF-8"%>
         <tbody>
           <c:choose>
             <c:when test="${not empty searchList}">
-              <!-- searchList가 존재하면, 반복하여 데이터를 보여주고 -->
-	          <c:forEach items="${searchList}" var="member">
-	            <tr>
-	              <td>${member.email}</td>
-	              <td>
-	                <a href="/member/view/${member.email}">${member.name}</a>
-	              </td>
-	              <td>${member.password}</td>
-	            </tr>
-	          </c:forEach>
+              <%-- searchList가 존재하면, 반복하여 데이터를 보여주고 --%>
+              <c:forEach items="${searchList}" var="member">
+                <tr>
+                  <td>${member.email}</td>
+                  <td>
+                    <a href="/member/view/${member.email}">${member.name}</a>
+                  </td>
+                  <td>${member.password}</td>
+                </tr>
+              </c:forEach>
             </c:when>
             <c:otherwise>
-              <!-- searchList가 존재하지 않으면, "검색된 데이터가 없습니다"를 보여주고 -->
+              <%-- searchList가 존재하지 않으면, "검색된 데이터가 없습니다"를 보여주고 --%>
               <tr>
                 <td colspan="3">검색된 데이터가 없습니다.</td>
               </tr>

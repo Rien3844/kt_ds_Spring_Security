@@ -16,7 +16,7 @@ pageEncoding="UTF-8"%>
         <li class="header">
           <ul class="header-item">
             <li>이메일</li>
-            <li>이메일</li>
+            <li>이름</li>
             <li>비밀번호</li>
           </ul>
         </li>
