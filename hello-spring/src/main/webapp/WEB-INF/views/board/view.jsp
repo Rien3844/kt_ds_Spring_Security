@@ -32,11 +32,13 @@ pageEncoding="UTF-8"%>
       <div>${article.originFileName}</div>
 
       <span>내용</span>
-      <div>${article.content}</div>
+      <!-- <pre> ==> Presentation -->
+      <pre>${article.content}</pre>
 
       <div class="btn-group">
         <div class="right-align">
-            <a href="/delete?id=${article.id}">삭제</a>
+          <a href="/update/${article.id}">수정</a>
+          <a href="/delete?id=${article.id}">삭제</a>
         </div>
       </div>
     </div>

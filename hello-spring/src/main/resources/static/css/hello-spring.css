@@ -9,6 +9,11 @@ body {
   color: #333;
 }
 
+pre {
+  margin: 0;
+  font-size: 1rem;
+}
+
 /* grid style 시작 */
 div.grid {
   display: grid;
@@ -50,7 +55,6 @@ div.write {
   grid-template-columns: 5rem 1fr;
   grid-template-rows: 1.75rem 1.75rem 20rem 1fr;
   row-gap: 0.625rem;
-  align-items: center;
 }
 /* 글쓰기 style 끝 */
 

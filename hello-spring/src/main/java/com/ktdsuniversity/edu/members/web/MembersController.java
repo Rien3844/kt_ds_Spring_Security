@@ -26,4 +26,11 @@ public class MembersController {
 		return "redirect:/login";
 	}
 	
+	/*
+	 * /member/view/사용자아이디 ==> 회원 정보 조회 하기.
+	 * /member/update/사용자아이디 ==> 회원 정보 수정 페이지 보기.
+	 * /member/update/사용자아이디 ==> 회원 정보 수정 하기.
+	 * /member/delete?id=사용자아이디 ==> 회원 정보 삭제 하기.
+	 */
+	
 }

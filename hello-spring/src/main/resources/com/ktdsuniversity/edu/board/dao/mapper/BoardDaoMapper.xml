@@ -76,6 +76,16 @@
           FROM BOARD
          WHERE ID = #{_parameter}
     </delete>
+    
+    <update id="updateBoardById"
+            parameterType="com.ktdsuniversity.edu.board.vo.request.UpdateVO">
+        UPDATE BOARD
+		   SET SUBJECT = #{subject}
+		     , EMAIL = #{email}
+		     , CONTENT = #{content}
+		     , MDFY_DT = SYSDATE
+		 WHERE ID = #{id}
+    </update>
 </mapper>
 
 
