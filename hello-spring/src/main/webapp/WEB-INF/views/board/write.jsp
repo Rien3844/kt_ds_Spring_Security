@@ -4,12 +4,14 @@
   <head>
     <meta charset="UTF-8" />
     <title>게시글 작성</title>
+    <script type="text/javascript" src="/js/jquery-4.0.0.slim.min.js"></script>
+    <script type="text/javascript" src="/js/board.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/hello-spring.css" />
   </head>
   <body>
     <h1>게시글 작성</h1>
     <%-- action ==> form 내부의 value를 전송할 엔드포인트 --%>
-    <form method="post" action="/write">
+    <form method="post" action="/write" enctype="multipart/form-data">
       <div class="grid write">
         <label for="subject">제목</label>
         <input
@@ -26,6 +28,12 @@
           name="email"
           placeholder="이메일을 입력하세요."
         />
+
+        <label for="attach-files">첨부파일</label>
+        <div id="attach-files" class="attach-files">
+          <input type="file" name="attachFile" />
+          <button type="button" class="add-file">+</button>
+        </div>
 
         <label for="content">내용</label>
         <textarea

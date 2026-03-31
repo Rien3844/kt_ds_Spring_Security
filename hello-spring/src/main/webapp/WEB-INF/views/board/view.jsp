@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html>
   <head>
@@ -28,7 +29,17 @@
       <div>${article.mdfyDt}</div>
 
       <span>첨부파일</span>
-      <div>${article.originFileName}</div>
+      <div>
+        <ul class="vertical-list">
+          <c:forEach items="${article.files}" var="file">
+            <li>
+              <a href="/file/${file.fileGroupId}/${file.fileNum}"
+                >${file.displayName}</a
+              >
+            </li>
+          </c:forEach>
+        </ul>
+      </div>
 
       <span>내용</span>
       <%-- <pre > ==> Presentation --%>
