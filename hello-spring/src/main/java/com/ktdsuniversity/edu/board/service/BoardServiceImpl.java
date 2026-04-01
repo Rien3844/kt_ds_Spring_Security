@@ -1,8 +1,6 @@
 package com.ktdsuniversity.edu.board.service;
 
-import com.ktdsuniversity.edu.CalculateController;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +15,9 @@ import com.ktdsuniversity.edu.board.vo.request.WriteVO;
 import com.ktdsuniversity.edu.board.vo.response.SearchResultVO;
 import com.ktdsuniversity.edu.files.dao.FilesDao;
 import com.ktdsuniversity.edu.files.helpers.MultipartFileHandler;
-import com.ktdsuniversity.edu.files.vo.request.UploadVO;
 
 @Service
 public class BoardServiceImpl implements BoardService {
-
-	private final CalculateController calculateController;
 
 	/**
 	 * 빈 컨테이너에 들어있는 객체 중 타입이 일치하는 객체를 할당 받는다.
@@ -36,10 +31,6 @@ public class BoardServiceImpl implements BoardService {
 	@Autowired
 	private FilesDao filesDao;
 
-	BoardServiceImpl(CalculateController calculateController) {
-		this.calculateController = calculateController;
-	}
-	
 	@Override
 	public SearchResultVO findAllBoard() {
 		SearchResultVO result = new SearchResultVO();
