@@ -1,6 +1,7 @@
 package com.ktdsuniversity.edu.members.service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,11 +91,22 @@ public class MembersServiceImpl implements MembersService {
 		}
 		
 		if (searchResult.getBlockYn().equals("Y")) {
-			
 			// 로그인 Block 된 시간으로부터 120분이 지나면 다시 로그인 가능한 상태로 변경한다.
 			// 이 경우엔 예외를 던지지 않도록 한다.
+			String latestLoginFailDate = searchResult.getLatestLoginFailDate();
 			
-			throw new IllegalArgumentException("이메일 또는 비밀번호가 잘못되었습니다.");
+			DateTimeFormatter dateTimePattern = 
+					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			LocalDateTime lastestBlockDateTime = LocalDateTime.parse(
+					latestLoginFailDate, dateTimePattern);
+			
+			// 마지막 로그인 실패 시간이 현재 시간에서 두 시간 이전의 시간보다 이후라면
+			//       14시                     15시 ==> 13시
+			// 아직 두 시간이 경과하지 않은 것.
+			if (lastestBlockDateTime.isAfter(LocalDateTime.now().minusMinutes(120))) {
+				// 예외를 던진다.
+				throw new IllegalArgumentException("이메일 또는 비밀번호가 잘못되었습니다.");
+			}
 		}
 		
 		
@@ -121,6 +133,8 @@ public class MembersServiceImpl implements MembersService {
 		// 로그인 성공처리
 		// 1. login_fail_count를 0으로 초기화.
 		// 2. latest_login_ip를 현재 아이피로 변경.
+		// 3. login_date를 현재 시간으로 변경.
+		// 4. block_yn을 'N'으로 변경.
 		this.membersDao.updateSuccessLogin(loginVO);
 		
 		// 6. 비밀번호가 일치하면 1에서 조회한 결과를 반환.

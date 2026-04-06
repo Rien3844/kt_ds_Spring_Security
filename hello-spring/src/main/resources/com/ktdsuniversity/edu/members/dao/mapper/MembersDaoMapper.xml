@@ -95,6 +95,7 @@
            SET LOGIN_FAIL_COUNT = 0
              , LATEST_LOGIN_IP = #{ip}
              , LOGIN_DATE = SYSDATE
+             , BLOCK_YN = 'N'
          WHERE EMAIL = #{email}
     </update>
 </mapper>
