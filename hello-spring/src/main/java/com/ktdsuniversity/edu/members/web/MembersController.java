@@ -13,12 +13,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ktdsuniversity.edu.members.service.MembersService;
 import com.ktdsuniversity.edu.members.vo.MembersVO;
+import com.ktdsuniversity.edu.members.vo.request.LoginVO;
 import com.ktdsuniversity.edu.members.vo.request.RegistVO;
 import com.ktdsuniversity.edu.members.vo.request.UpdateVO;
 import com.ktdsuniversity.edu.members.vo.response.DuplicateResultVO;
 import com.ktdsuniversity.edu.members.vo.response.SearchResultVO;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+
+/**
+ * EndPoint 생성/관리.
+ * + Validation Check
+ */
 
 @Controller
 public class MembersController {
@@ -113,6 +121,36 @@ public class MembersController {
 		model.addAttribute("searchList", searchResult.getResult());
 		model.addAttribute("searchCount", searchResult.getCount());
 		return "members/newlist";
+	}
+	
+	@GetMapping("/login")
+	public String viewLoginPage() {
+		return "members/login"; 
+	}
+	
+	@PostMapping("/login")
+	public String doLoginAction(
+			@Valid @ModelAttribute LoginVO loginVO,
+			BindingResult bindingResult,
+			Model model,
+			HttpServletRequest request) {
+		
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("loginData", loginVO);
+			return "members/login";
+		}
+		
+		String userIp = request.getRemoteAddr();
+		loginVO.setIp(userIp);
+		
+		MembersVO member = 
+				this.membersService
+				    .findMemberByEmailAndPassword(loginVO);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("__LOGIN_DATA__", member);
+		
+		return "redirect:/";
 	}
 }
 
