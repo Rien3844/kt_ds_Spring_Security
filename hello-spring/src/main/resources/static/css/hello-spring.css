@@ -296,6 +296,8 @@ div.login {
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
+
+  border-bottom: 1px solid #aaa;
 }
 
 .replies > li:nth-child(odd) {
