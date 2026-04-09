@@ -3,10 +3,14 @@
 
 <jsp:include page="/WEB-INF/views/templates/header.jsp">
   <jsp:param value="게시글 내용 조회 : ${article.id}" name="title" />
+  <jsp:param
+    value="<script type='text/javascript' src='/js/reply.js'></script>"
+    name="scripts"
+  />
 </jsp:include>
 
 <h1>게시글 내용 조회</h1>
-<div class="grid view">
+<div class="grid view" data-article-id="${article.id}">
   <span>아이디</span>
   <div>${article.id}</div>
 
@@ -50,7 +54,7 @@
     <input type="text" class="parent-reply-id" readonly />
     <textarea class="reply-content"></textarea>
     <input type="file" class="reply-attach-file" />
-    <button class="reply-save">등록</button>
+    <button class="reply-save" data-article-id="${article.id}">등록</button>
   </div>
 
   <template class="reply-item-template">

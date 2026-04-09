@@ -274,3 +274,70 @@ div.login {
   row-gap: 0.625rem;
 }
 /* 회원 목록 style 끝 */
+
+/* 댓글 style 시작 */
+.replies-count,
+.replies,
+.reply-form {
+  grid-column: 1 / -1;
+}
+
+.replies {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  gap: 0.625rem;
+}
+
+.replies > li {
+  padding: 0.625rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.replies > li:nth-child(odd) {
+  background-color: #f3f3f3;
+}
+
+.replies > li > .links {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.replies > li > .links > span {
+  display: inline-block;
+  padding: 0.625rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.replies > li > .links > span:hover {
+  color: #fff;
+  background-color: #0003;
+  border-radius: 0.5rem;
+}
+
+.reply-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.reply-form > .parent-reply-id {
+  align-self: flex-start;
+  width: auto;
+  border: 0;
+  outline: 0;
+}
+
+.reply-form > .reply-content {
+  height: 10rem;
+}
+
+.reply-form > .reply-save {
+  align-self: flex-end;
+}
+/* 댓글 style 끝 */
