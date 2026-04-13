@@ -67,6 +67,15 @@
             <a href="/write">새로운 게시글 작성</a>
           </div>
         </div>
+        
+        <ul class="page-navigator">
+          <c:forEach begin="0" 
+                     end="${pagination.pageCount}" 
+                     step="1"
+                     var="page">
+            ${page}
+          </c:forEach>
+        </ul>
       </div>
     </div>
   </body>

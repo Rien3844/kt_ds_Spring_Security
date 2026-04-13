@@ -12,22 +12,28 @@
     </select>
     
     <select id="selectBoardList" 
+            parameterType="com.ktdsuniversity.edu.board.vo.request.SearchListVO"
             resultMap="BoardVOMap">
-        SELECT B.ID
-             , B.SUBJECT
-             , B.CONTENT
-             , B.EMAIL
-             , B.VIEW_CNT
-             , TO_CHAR(B.CRT_DT, 'YYYY-MM-DD HH24:MI:SS') AS CRT_DT
-             , TO_CHAR(B.MDFY_DT, 'YYYY-MM-DD HH24:MI:SS') AS MDFY_DT
-             , B.FILE_NAME
-             , B.ORIGIN_FILE_NAME
-             , M.NAME
-             , M.REGIST_DATE
-          FROM BOARD B
-         INNER JOIN MEMBERS M
-            ON B.EMAIL = M.EMAIL
-         ORDER BY B.ID DESC
+        SELECT *
+          FROM (SELECT S.*
+                     , ROWNUM AS RNUM
+                  FROM (SELECT B.ID
+				             , B.SUBJECT
+				             , B.CONTENT
+				             , B.EMAIL
+				             , B.VIEW_CNT
+				             , TO_CHAR(B.CRT_DT, 'YYYY-MM-DD HH24:MI:SS') AS CRT_DT
+				             , TO_CHAR(B.MDFY_DT, 'YYYY-MM-DD HH24:MI:SS') AS MDFY_DT
+				             , B.FILE_NAME
+				             , B.ORIGIN_FILE_NAME
+				             , M.NAME
+				             , M.REGIST_DATE
+				          FROM BOARD B
+				         INNER JOIN MEMBERS M
+				            ON B.EMAIL = M.EMAIL
+				         ORDER BY B.ID DESC) S
+                 WHERE ROWNUM <![CDATA[ <= ]]> (#{pageNo} + 1) * #{listSize})
+         WHERE RNUM >= #{pageNo} * #{listSize} + 1
     </select>
     
     <insert id="insertNewBoard" 

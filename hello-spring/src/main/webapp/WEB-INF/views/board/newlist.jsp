@@ -57,6 +57,17 @@
             </c:if>
           </div>
         </div>
+        
+        <ul class="page-navigator">
+          <c:forEach begin="0" 
+                     end="${pagination.pageCount - 1}" 
+                     step="1"
+                     var="page">
+            <li>
+              <a href="/?pageNo=${page}&listSize=${pagination.listSize}">${page + 1}</a>
+            </li>
+          </c:forEach>
+        </ul>
       </div>
 
   <jsp:include page="/WEB-INF/views/templates/footer.jsp"></jsp:include>
