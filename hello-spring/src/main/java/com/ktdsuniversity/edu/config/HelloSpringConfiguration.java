@@ -1,6 +1,5 @@
 package com.ktdsuniversity.edu.config;
 
-import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -30,7 +28,6 @@ import com.ktdsuniversity.edu.security.authenticate.service.SecurityUserDetailsS
 import com.ktdsuniversity.edu.security.providers.JsonWebTokenAuthenticationProvider;
 import com.ktdsuniversity.edu.security.providers.UsernameAndPasswordAuthenticationProvider;
 
-import jakarta.servlet.http.HttpServletRequest;
 
 // application.yml에서 작성할 수 없는 설정들을 적용하기 위한 Annotation
 // @Component 의 자식 Annotation
