@@ -5,6 +5,14 @@
 
 # spring.application.name=hello-spring
 
+# Spring 이외의 Custom 설정
+app:
+  jwt:
+    issuer: hello-spring
+    # jwt 암호화 시키는 key, 너무 짧아도, 뻔해도 안됨. => 유추할 수 없는 데이터
+    # secret-key: spring-security-secret-key-random-token-key
+    secret-key: sadn9xuin29dx29sd0x2fje9p2j90v40tafjdasjo22
+
 # mybatis 연동 설정
 mybatis:
   # mybatis 설정 파일 위치 지정.
@@ -13,6 +21,12 @@ mybatis:
   mapper-locations: classpath:com/ktdsuniversity/edu/**/mapper/*Mapper.xml
 
 spring:
+  servlet:
+    multipart: # 파일업로드 용량 정책 설정.
+      # Spring Server가 한 번에 받을 수 있는 최대 용량
+      max-file-size: 150MB
+      # 파일 업로드를 할 수 있는 최대 용량
+      max-request-size: 50MB
   mvc:
     view:
       prefix: /WEB-INF/views/

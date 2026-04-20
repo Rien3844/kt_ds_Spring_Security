@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ktdsuniversity.edu.common.utils.AuthUtils;
 import com.ktdsuniversity.edu.common.utils.ObjectUtils;
-import com.ktdsuniversity.edu.common.utils.SessionUtils;
 import com.ktdsuniversity.edu.exceptions.HelloSpringApiException;
 import com.ktdsuniversity.edu.files.dao.FilesDao;
 import com.ktdsuniversity.edu.files.helpers.MultipartFileHandler;
@@ -25,8 +25,6 @@ import com.ktdsuniversity.edu.replies.vo.response.DeleteResultVO;
 import com.ktdsuniversity.edu.replies.vo.response.RecommendResultVO;
 import com.ktdsuniversity.edu.replies.vo.response.SearchResultVO;
 import com.ktdsuniversity.edu.replies.vo.response.UpdateResultVO;
-
-import jakarta.validation.Valid;
 
 @Service
 public class RepliesServiceImpl implements RepliesService {
@@ -84,7 +82,11 @@ public class RepliesServiceImpl implements RepliesService {
 		
 		RepliesVO reply = this.repliesDao.selectReplyByReplyId(replyId);
 		if (ObjectUtils.isNotNull(reply)) {
-			if (SessionUtils.isMineResource(reply.getEmail())) {
+			
+			String loginEmail = AuthUtils.getUsername();
+			boolean isAdminAccount = AuthUtils.hasAnyRole("RL-20260414-000004", "RL-20260414-000005");
+			
+			if (isAdminAccount || loginEmail.equals(reply.getEmail())) {
 				throw new HelloSpringApiException(
 						"권한이 부족합니다.", 
 						HttpStatus.BAD_REQUEST.value(), 
@@ -110,7 +112,12 @@ public class RepliesServiceImpl implements RepliesService {
 		
 		RepliesVO reply = this.repliesDao.selectReplyByReplyId(replyId);
 		if (ObjectUtils.isNotNull(reply)) {
-			if (!SessionUtils.isMineResource(reply.getEmail())) {
+			
+			String loginEmail = AuthUtils.getUsername();
+			boolean isAdminAccount = AuthUtils.hasAnyRole("RL-20260414-000004", "RL-20260414-000005");
+			
+			// 관리자가 아니고 내가 쓴것도 아니라면 댓글은 삭제할 수 없다.
+			if (!isAdminAccount && !loginEmail.equals(reply.getEmail())) {
 				throw new HelloSpringApiException(
 						"권한이 부족합니다.", 
 						HttpStatus.BAD_REQUEST.value(), 
@@ -133,7 +140,11 @@ public class RepliesServiceImpl implements RepliesService {
 		
 		RepliesVO reply = this.repliesDao.selectReplyByReplyId(updateVO.getReplyId());
 		if (ObjectUtils.isNotNull(reply)) {
-			if (!SessionUtils.isMineResource(reply.getEmail())) {
+			String loginEmail = AuthUtils.getUsername();
+			boolean isAdminAccount = AuthUtils.hasAnyRole("RL-20260414-000004", "RL-20260414-000005");
+			
+			// 관리자가 아니고 내가 작성한 댓글도 아니라면 수정할 수 없다.
+			if (!isAdminAccount && !loginEmail.equals(reply.getEmail())) {
 				throw new HelloSpringApiException(
 						"권한이 부족합니다.", 
 						HttpStatus.BAD_REQUEST.value(), 
@@ -181,6 +192,31 @@ public class RepliesServiceImpl implements RepliesService {
 		result.setReplyId(updateVO.getReplyId());
 		result.setUpdate(updateCount == 1);
 		return result;
+	}
+
+	@Transactional
+	@Override
+	public boolean deleteAllRepliesByArticleId(String articleId) {
+		List<String> attachFilePaths = this.repliesDao.selectFileInRepliesByArticleId(articleId);
+		
+		int replyDeleteCount = this.repliesDao.deleteAllRepliesByArticleId(articleId);
+		int fileDeleteCount = 0;
+		if (replyDeleteCount > 0) {
+			File attachFile = null;
+			for (String filePath: attachFilePaths) {
+				attachFile = new File(filePath);
+				if (attachFile.exists()) {
+					attachFile.delete();
+				}
+				
+				this.filesDao.deleteFileGroupByFilePath(filePath);
+				fileDeleteCount += this.filesDao.deleteFileByFilePath(filePath);
+			}
+		}
+		
+		logger.debug("댓글 삭제 개수: {}", replyDeleteCount);
+		logger.debug("첨부파일 삭제 개수: {}", fileDeleteCount);
+		return replyDeleteCount > 0;
 	}
 	
 }

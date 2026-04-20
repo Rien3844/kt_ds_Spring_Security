@@ -24,5 +24,15 @@ public interface RepliesDao {
 	int deleteReplyByReplyId(String replyId);
 
 	int updateReplyByReplyId(UpdateVO updateVO);
+	
+	
+
+	List<String> selectFileInReplies();
+
+	int deleteAllReplies();
+
+	List<String> selectFileInRepliesByArticleId(String articleId);
+
+	int deleteAllRepliesByArticleId(String articleId);
 
 }

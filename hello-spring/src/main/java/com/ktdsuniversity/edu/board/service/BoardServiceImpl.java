@@ -17,10 +17,12 @@ import com.ktdsuniversity.edu.board.vo.request.SearchListVO;
 import com.ktdsuniversity.edu.board.vo.request.UpdateVO;
 import com.ktdsuniversity.edu.board.vo.request.WriteVO;
 import com.ktdsuniversity.edu.board.vo.response.SearchResultVO;
+import com.ktdsuniversity.edu.common.utils.AuthUtils;
 import com.ktdsuniversity.edu.exceptions.HelloSpringException;
 import com.ktdsuniversity.edu.files.dao.FilesDao;
 import com.ktdsuniversity.edu.files.helpers.MultipartFileHandler;
 import com.ktdsuniversity.edu.files.vo.request.SearchFileGroupVO;
+import com.ktdsuniversity.edu.replies.dao.RepliesDao;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -32,6 +34,9 @@ public class BoardServiceImpl implements BoardService {
 	 */
 	@Autowired
 	private BoardDao boardDao;
+	
+	@Autowired
+	private RepliesDao repliesDao;
 	
 	@Autowired
 	private MultipartFileHandler multipartFileHandler;
@@ -100,6 +105,15 @@ public class BoardServiceImpl implements BoardService {
 		
 		// 2. 게시글 조회.
 		BoardVO board = this.boardDao.selectBoardById(articleId);
+		if (readType == ReadType.UPDATE) {
+			
+			String loginUserEmail = AuthUtils.getUsername();
+			boolean isAdminAccount = AuthUtils.hasAnyRole("RL-20260414-000001", "RL-20260414-000002");
+			
+			if (!isAdminAccount && !loginUserEmail.equals(board.getEmail())) {
+				throw new HelloSpringException("잘못된 접근입니다.", "errors/403");
+			}
+		}
 		
 		// 조회한 게시글을 반환.
 		return board;
@@ -108,6 +122,16 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	@Override
 	public boolean deleteBoardByArticleId(String id) {
+		
+		BoardVO board = this.boardDao.selectBoardById(id);
+		
+		String loginUserEmail = AuthUtils.getUsername();
+		boolean isAdminAccount = AuthUtils.hasAnyRole("RL-20260414-000001", "RL-20260414-000002");
+		
+		if (!isAdminAccount && !loginUserEmail.equals(board.getEmail())) {
+			throw new HelloSpringException("잘못된 접근입니다.", "errors/403");
+		}
+		
 		int deleteCount = this.boardDao.deleteBoardById(id);
 		
 		// 삭제하려는 게시글에 첨부된 파일 목록을 가져온다.
@@ -130,6 +154,19 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	@Override
 	public boolean updateBoardByArticleId(UpdateVO updateVO) {
+		
+		// 게시글을 불러오고
+		BoardVO board = this.boardDao.selectBoardById(updateVO.getId());
+		
+		// 권한 검사한 이후에 경우에 따라 예외를 던져준다.
+		String loginUserEmail = AuthUtils.getUsername();
+		boolean isAdminAccount = AuthUtils.hasAnyRole("RL-20260414-000004", "RL-20260414-000005");
+		
+		if (!isAdminAccount && !loginUserEmail.equals(board.getEmail())) {
+			throw new HelloSpringException("잘못된 접근입니다.", "errors/403");
+		}
+		
+		
 		// 선택한 파일들만 삭제.
 		if ( updateVO.getDeleteFileNum() != null && 
 				updateVO.getDeleteFileNum().size() > 0) {
@@ -164,6 +201,38 @@ public class BoardServiceImpl implements BoardService {
 		int updateCount = this.boardDao.updateBoardById(updateVO);
 		
 		return updateCount == 1;
+	}
+
+	@Transactional
+	@Override
+	public boolean deleteAllBoard() {
+		
+		List<String> attachFilePaths = this.boardDao.selectFileInBoard();
+		attachFilePaths.addAll(this.repliesDao.selectFileInReplies());
+
+		int replyDeleteCount = 0;
+		int fileDeleteCount = 0;
+		int deleteCount = this.boardDao.deleteAllBoard();
+		if (deleteCount > 0) {
+			replyDeleteCount = this.repliesDao.deleteAllReplies();
+			
+			File attachFile = null;
+			for (String filePath: attachFilePaths) {
+				attachFile = new File(filePath);
+				if (attachFile.exists()) {
+					attachFile.delete();
+				}
+				
+				this.filesDao.deleteFileGroupByFilePath(filePath);
+				fileDeleteCount += this.filesDao.deleteFileByFilePath(filePath);
+			}
+		}
+		
+		logger.debug("게시글 삭제 개수: {}", deleteCount);
+		logger.debug("댓글 삭제 개수: {}", replyDeleteCount);
+		logger.debug("첨부파일 삭제 개수: {}", fileDeleteCount);
+		
+		return deleteCount > 0;
 	}
 
 }

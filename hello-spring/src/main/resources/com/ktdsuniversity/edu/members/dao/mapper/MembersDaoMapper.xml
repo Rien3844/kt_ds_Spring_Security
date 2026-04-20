@@ -60,17 +60,23 @@
          WHERE EMAIL = #{_parameter}
     </delete>
     
-    <select id="selectMembersCount" resultType="_int">
+    <select id="selectMembersCount" 
+            parameterType="com.ktdsuniversity.edu.members.vo.request.MemberSearchVO"
+            resultType="_int">
         SELECT COUNT(EMAIL)
           FROM MEMBERS
     </select>
 
-    <select id="selectMembersList" resultType="com.ktdsuniversity.edu.members.vo.MembersVO">
+    <select id="selectMembersList" 
+            parameterType="com.ktdsuniversity.edu.members.vo.request.MemberSearchVO"
+            resultType="com.ktdsuniversity.edu.members.vo.MembersVO">
+        <include refid="Common.pagination_header" />
         SELECT EMAIL
              , NAME
              , PASSWORD
           FROM MEMBERS
          ORDER BY EMAIL ASC
+        <include refid="Common.pagination_footer" />
     </select>
     
     <update id="updateIncreaseLoginFailCount" 
@@ -98,4 +104,20 @@
              , BLOCK_YN = 'N'
          WHERE EMAIL = #{email}
     </update>
+    
+    <select id="selectMemberRolesByEmail"
+            parameterType="string"
+            resultType="string">
+         SELECT ROLE_ID
+		   FROM ROLES
+		  START WITH ROLE_ID = (SELECT ROLE_ID
+		                          FROM MEMBERS
+		                         WHERE EMAIL = #{_parameter})
+		CONNECT BY PRIOR ROLE_ID = TOP_ROLE_ID
+    </select>
+    
+    
+    
 </mapper>
+
+

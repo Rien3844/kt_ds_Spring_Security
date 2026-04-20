@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" 
     pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
     <!-- /templates/header.jsp import -->
     <jsp:include page="/WEB-INF/views/templates/header.jsp">
@@ -11,7 +12,16 @@
     
       <div class="grid list">
         <h1>게시글 목록</h1>
-        <div>총 ${searchCount}개의 게시글이 검색되었습니다.</div>
+        <div>
+            총 ${searchCount}개의 게시글이 검색되었습니다.
+            <!-- 로그인 사용자가 "슈퍼 관리자" 
+                 권한일 때 노출되도록 한다. -->
+            <sec:authorize access="hasRole('RL-20260414-000001')">
+	            <a href="/delete/all">
+	                전체 게시글 삭제
+	            </a>
+            </sec:authorize>
+        </div>
         <ul class="grid articles">
           <li class="header">
             <ul class="header-item">
@@ -54,9 +64,9 @@
 
         <div class="btn-group">
           <div class="right-align">
-            <c:if test="${not empty sessionScope.__LOGIN_DATA__}">
+            <sec:authorize access="isAuthenticated()">
               <a href="/write">새로운 게시글 작성</a>
-            </c:if>
+            </sec:authorize>
           </div>
         </div>
         

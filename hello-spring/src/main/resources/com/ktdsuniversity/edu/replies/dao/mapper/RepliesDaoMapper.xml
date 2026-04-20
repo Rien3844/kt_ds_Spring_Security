@@ -137,6 +137,35 @@
          WHERE ID = #{replyId}
     </update>
     
+    <select id="selectFileInReplies"
+            resultType="string">
+        SELECT F.FILE_PATH 
+          FROM REPLIES R
+         INNER JOIN FILES F
+            ON R.FILE_GROUP_ID = F.FILE_GROUP_ID
+    </select>
+    
+    <delete id="deleteAllReplies">
+        DELETE
+          FROM REPLIES
+    </delete>
+    
+    <select id="selectFileInRepliesByArticleId"
+            resultType="string"
+            parameterType="string">
+        SELECT F.FILE_PATH 
+          FROM REPLIES R
+         INNER JOIN FILES F
+            ON R.FILE_GROUP_ID = F.FILE_GROUP_ID
+         WHERE R.ARTICLE_ID = #{_parameter}
+    </select>
+    
+    <delete id="deleteAllRepliesByArticleId"
+            parameterType="string">
+        DELETE
+          FROM REPLIES
+         WHERE ARTICLE_ID = #{_parameter}
+    </delete>
 </mapper>
 
 

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <jsp:include page="/WEB-INF/views/templates/header.jsp">
   <jsp:param value="게시글 내용 조회 : ${article.id}" name="title" />
@@ -48,6 +49,13 @@
 
   <div class="replies-count">
     총 <span class="count">0</span>개의 댓글이 검색되었습니다.
+    <!-- 로그인 사용자가 "슈퍼 관리자" 
+         권한일 때 노출되도록 한다. -->
+    <sec:authorize access="hasRole('RL-20260414-000001')">
+	    <a href="/reply/delete/all/${article.id}">
+	        전체 댓글 삭제
+	    </a>
+    </sec:authorize>
   </div>
   <ul class="replies"></ul>
   <div class="reply-form">
@@ -105,10 +113,20 @@
 
   <div class="btn-group">
     <div class="right-align">
-      <c:if test="${sessionScope.__LOGIN_DATA__.email eq article.email}">
-        <a href="/update/${article.id}">수정</a>
-        <a href="/delete?id=${article.id}">삭제</a>
-      </c:if>
+      <!-- 사용자의 권한(ROLE)이 
+           슈퍼관리자 혹은 관리자 라면 내가 쓰지 않은 게시글이라도 
+           수정 및 삭제할 수 있다. -->
+      <sec:authorize 
+        access="hasAnyRole('RL-20260414-000001', 'RL-20260414-000002')" 
+        var="isAdmin" />
+      
+      <sec:authorize access="isAuthenticated()">
+	      <sec:authentication property="principal.email" var="loginUserEmail" />
+	      <c:if test="${ isAdmin or loginUserEmail eq article.email}">
+	        <a href="/update/${article.id}">수정</a>
+	        <a href="/delete?id=${article.id}">삭제</a>
+	      </c:if>
+      </sec:authorize>
     </div>
   </div>
 </div>

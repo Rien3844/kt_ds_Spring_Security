@@ -9,7 +9,7 @@
     <h1>로그인</h1>
     <form:form modelAttribute="loginVO" 
                method="post" 
-               action="/login">
+               action="/login-provider">
       
       <c:if test="${not empty errorMessage}">
         <div class="validation-error">${errorMessage}</div>

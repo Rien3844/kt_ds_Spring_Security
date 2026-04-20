@@ -2,11 +2,22 @@
 회원페이지와 관련된 스크립트 작성.
  */
 $().ready(function () {
+  $(".page-navigator").find("a").on("click", function() {
+    var pageNo = $(this).data("page-no");
+    var listSize = $("#list-size").val();
+        
+    location.href = "/member?pageNo=" + pageNo + "&listSize=" + listSize;
+  });
   
+  $("#list-size").on("change", function() {
+    var listSize = $("#list-size").val();
+    location.href = "/member?pageNo=0&listSize=" + listSize;
+  });
+      
   // 현재 Location의 pathname을 가지고 온다.
   var pathname = location.pathname;
   // pathname이 "/login"이 아니라면 action을 "/login?go={pathname}" 으로 수정한다.
-  if (pathname !== "/login") {
+  if (pathname !== "/login" && pathname !== "/login-provider") {
     pathname = "?go=" + pathname;
   }
   else {
@@ -14,7 +25,7 @@ $().ready(function () {
   }
   
   $("#loginVO")
-      .attr({action: "/login" + pathname});
+      .attr({action: "/login-provider" + pathname});
     
   // 이메일 포커스가 해제되면, 0.15초 이후에 이메일 재검사.
   $("#email").on("blur", function () {
@@ -48,7 +59,7 @@ $().ready(function () {
     // 이메일을 입력을 했을 때!
     if (emailPattern.test(emailValue)) {
       // 비동기로 중복 여부를 검사해 온다.
-      fetch("/regist/check/duplicate/" + emailValue)
+      fetch("http://192.168.211.28:8080/regist/check/duplicate/" + emailValue)
         // 비동기결과를 이용해서 메시지를 노출하거나 숨긴다.
         .then(function (fetchResult) {
           return fetchResult.json();

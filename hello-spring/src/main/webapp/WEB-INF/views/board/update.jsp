@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
   <jsp:include page="/WEB-INF/views/templates/header.jsp">
     <jsp:param value="게시글 수정" name="title" />
     <jsp:param value="<script type='text/javascript' src='/js/board.js'></script>" 
@@ -13,6 +15,7 @@
       action="/update/${article.id}"
       enctype="multipart/form-data"
     >
+      <sec:csrfInput/>
       <input type="hidden" name="fileGroupId" value="${article.fileGroupId}" />
 
       <div class="grid update">

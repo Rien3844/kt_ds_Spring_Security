@@ -96,6 +96,22 @@
 		VALUES 
 		 (#{_parameter})
     </insert>
+    
+    <delete id="deleteFileByFilePath" 
+            parameterType="string">
+        DELETE 
+          FROM FILES
+         WHERE FILE_PATH = #{_parameter}
+    </delete>
+
+    <delete id="deleteFileGroupByFilePath" 
+            parameterType="string">
+        DELETE
+          FROM FILES_GROUP
+         WHERE FILE_GROUP_ID = (SELECT FILE_GROUP_ID
+						          FROM FILES
+						         WHERE FILE_PATH = #{_parameter})
+    </delete>
 </mapper>
 
 
