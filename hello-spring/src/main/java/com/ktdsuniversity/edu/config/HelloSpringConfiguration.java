@@ -144,6 +144,9 @@ public class HelloSpringConfiguration implements
 		// CSRF를 체크하는 SecurityFilter(CsrfFilter)를 무효화.
 //		 httpSecurity.csrf(csrf -> csrf.disable());
 		
+		// API 통신에서는 CSRF를 체크하지 않도록 설정.
+		httpSecurity.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));
+		
 		// UsernamePasswordAuthenticationFilter 수정.
 		httpSecurity.formLogin(formLogin -> 
 					// Login URL 지정.
