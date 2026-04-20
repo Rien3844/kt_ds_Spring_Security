@@ -13,14 +13,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.ktdsuniversity.edu.members.dao.MembersDao;
+import com.ktdsuniversity.edu.security.authenticate.filters.JsonWebTokenAuthenticationFilter;
 import com.ktdsuniversity.edu.security.authenticate.handlers.LoginFailureHandler;
 import com.ktdsuniversity.edu.security.authenticate.handlers.LoginSuccessHandler;
 import com.ktdsuniversity.edu.security.authenticate.service.SecurityPasswordEncoder;
@@ -97,6 +100,12 @@ public class HelloSpringConfiguration implements
 		return new LoginFailureHandler(this.membersDao);
 	}
 	
+	@Bean
+	OncePerRequestFilter createJwtAuthFilter() {
+		return new JsonWebTokenAuthenticationFilter(
+				  this.createJwtAuthenticationProvider()
+				, this.createUserDetailsService());
+	}
 	
 	// Spring Login Filter(BasicAuthenticationFilter) 등록.
 	// Spring Security의 기본 로그인 절차를 수정하는 작업.
@@ -143,6 +152,10 @@ public class HelloSpringConfiguration implements
 		
 		// API 통신에서는 CSRF를 체크하지 않도록 설정.
 		httpSecurity.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));
+		
+		// Custom Filter(JsonWebTokenAuthenticationFilter) 추가.
+		httpSecurity.addFilterAfter(this.createJwtAuthFilter()
+								  , UsernamePasswordAuthenticationFilter.class);
 		
 		// UsernamePasswordAuthenticationFilter 수정.
 		httpSecurity.formLogin(formLogin -> 
