@@ -22,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.ktdsuniversity.edu.exceptions.handlers.AuthorizationDeniedeExceptionHandler;
 import com.ktdsuniversity.edu.members.dao.MembersDao;
 import com.ktdsuniversity.edu.security.authenticate.filters.JsonWebTokenAuthenticationFilter;
 import com.ktdsuniversity.edu.security.authenticate.handlers.LoginFailureHandler;
@@ -156,6 +157,11 @@ public class HelloSpringConfiguration implements
 		// Custom Filter(JsonWebTokenAuthenticationFilter) 추가.
 		httpSecurity.addFilterAfter(this.createJwtAuthFilter()
 								  , UsernamePasswordAuthenticationFilter.class);
+		
+		// AuthorizationDeniedExceptionHandler 를 추가한다.
+		// Controller 코드 이하에서 @PreAuthorized() 검증에 실패하면 아래 설정에 등록한 Handler가 동작하게 된다.
+		httpSecurity.exceptionHandling(exceptionHandling -> 
+							exceptionHandling.accessDeniedHandler(new AuthorizationDeniedeExceptionHandler()));
 		
 		// UsernamePasswordAuthenticationFilter 수정.
 		httpSecurity.formLogin(formLogin -> 

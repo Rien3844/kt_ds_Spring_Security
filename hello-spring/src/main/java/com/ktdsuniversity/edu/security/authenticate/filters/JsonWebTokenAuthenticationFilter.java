@@ -1,8 +1,6 @@
 package com.ktdsuniversity.edu.security.authenticate.filters;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.security.Security;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -68,37 +66,24 @@ public class JsonWebTokenAuthenticationFilter extends OncePerRequestFilter {
 			// Request 에서 header 에 있는 Authorization 을 꺼내온다.
 			String jsonWebToken = request.getHeader("Authorization");
 			
-			// JsonWebToken이 없다면 ==> Header에 Authorization이 전달되지 않았다면.
-			// 사용자에게 "인증이 필요합니다" 라는 JSON 메시지 보내주기.
-			if(StringUtils.isEmpty(jsonWebToken)) {
-				String errorMessage = "{\"error\": \"인증이 필요합니다.\"}";
+			if(!StringUtils.isEmpty(jsonWebToken)) {
+				// 있으면
+				// JWT를 복호화시켜 email 을 가져온다.
+				String email = this.jsonWebTokenAuthenticationProvider.decryptJsonWebToken(jsonWebToken);
 				
-				// JSON 반환 시작
-				response.setCharacterEncoding("UTF-8");
-				response.setContentType("application/json");
+				// email을 이용해 사용자의 정보와 권한을 조회한다.
+				UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
+				SecurityUser securityUser = (SecurityUser) userDetails;
 				
-				PrintWriter writer = response.getWriter();
-				writer.append(errorMessage);
-				writer.flush();
-				return;
+				// 사용자의 정보를 이용해 AuthenticationToken(UsernamePasswordAuthenticationToken)을 발행한다.
+				Authentication authToken = new UsernamePasswordAuthenticationToken(
+						securityUser.getMembersVO()
+						, userDetails.getPassword()
+						, userDetails.getAuthorities());
+				
+				// 발행한 AuthenticationToken을 SecurityContext에 적재시킨다. (일회용 토큰)
+				SecurityContextHolder.getContext().setAuthentication(authToken);
 			}
-			
-			// 있으면
-			// JWT를 복호화시켜 email 을 가져온다.
-			String email = this.jsonWebTokenAuthenticationProvider.decryptJsonWebToken(jsonWebToken);
-			
-			// email을 이용해 사용자의 정보와 권한을 조회한다.
-			UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
-			SecurityUser securityUser = (SecurityUser) userDetails;
-			
-			// 사용자의 정보를 이용해 AuthenticationToken(UsernamePasswordAuthenticationToken)을 발행한다.
-			Authentication authToken = new UsernamePasswordAuthenticationToken(
-					securityUser.getMembersVO()
-					, userDetails.getPassword()
-					, userDetails.getAuthorities());
-			
-			// 발행한 AuthenticationToken을 SecurityContext에 적재시킨다. (일회용 토큰)
-			SecurityContextHolder.getContext().setAuthentication(authToken);
 		}
 		
 		// 이 다음 필터가 있다면 그 필터를 동작시킨다.

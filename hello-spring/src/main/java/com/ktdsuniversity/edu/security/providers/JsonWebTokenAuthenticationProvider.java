@@ -77,7 +77,6 @@ public class JsonWebTokenAuthenticationProvider {
 		
 		String jsonWebToken = Jwts.builder()
 								  // JsonWebToken을 발행한 시스템의 이름
-								  // TODO aplication.yml에서 가져올것
 								  .issuer(this.issuer)
 								  // JsonWebToken의 이름 작성
 								  .subject(email + "_token")
