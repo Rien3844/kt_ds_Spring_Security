@@ -108,7 +108,7 @@ public class BoardServiceImpl implements BoardService {
 		if (readType == ReadType.UPDATE) {
 			
 			String loginUserEmail = AuthUtils.getUsername();
-			boolean isAdminAccount = AuthUtils.hasAnyRole("RL-20260414-000001", "RL-20260414-000002");
+			boolean isAdminAccount = AuthUtils.hasAnyRole("RL-20260414-000004", "RL-20260414-000005");
 			
 			if (!isAdminAccount && !loginUserEmail.equals(board.getEmail())) {
 				throw new HelloSpringException("잘못된 접근입니다.", "errors/403");
@@ -126,7 +126,7 @@ public class BoardServiceImpl implements BoardService {
 		BoardVO board = this.boardDao.selectBoardById(id);
 		
 		String loginUserEmail = AuthUtils.getUsername();
-		boolean isAdminAccount = AuthUtils.hasAnyRole("RL-20260414-000001", "RL-20260414-000002");
+		boolean isAdminAccount = AuthUtils.hasAnyRole("RL-20260414-000004", "RL-20260414-000005");
 		
 		if (!isAdminAccount && !loginUserEmail.equals(board.getEmail())) {
 			throw new HelloSpringException("잘못된 접근입니다.", "errors/403");

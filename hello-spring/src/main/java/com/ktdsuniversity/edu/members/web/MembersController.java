@@ -140,7 +140,7 @@ public class MembersController {
 	//                          : 회원의 수가 없을 때, "등록된 회원이 없습니다" 출력
 	//                          : 목록 아래에는 "새로운 회원 등록" 링크 추가.
 	// 관리자 계정에서만 볼 수 있도록 개선.
-	@PreAuthorize("hasRole('RL-20260414-000002')")
+	@PreAuthorize("hasRole('RL-20260414-000005')")
 	@GetMapping("/member")
 	public String viewMembersPage(Model model, MemberSearchVO membersSearchVO) {
 		SearchResultVO searchResult = this.membersService.findMembersList(membersSearchVO);

@@ -135,7 +135,7 @@ public class BoardController {
 		
 	}
 	
-	@PreAuthorize("hasRole('RL-20260414-000001')")
+	@PreAuthorize("hasRole('RL-20260414-000004')")
 	@GetMapping("/delete/all")
 	public String doDeleteAllAction() {
 		boolean deleteResult = this.boardService.deleteAllBoard();

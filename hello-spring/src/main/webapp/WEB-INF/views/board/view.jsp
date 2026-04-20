@@ -51,7 +51,7 @@
     총 <span class="count">0</span>개의 댓글이 검색되었습니다.
     <!-- 로그인 사용자가 "슈퍼 관리자" 
          권한일 때 노출되도록 한다. -->
-    <sec:authorize access="hasRole('RL-20260414-000001')">
+    <sec:authorize access="hasRole('RL-20260414-000004')">
 	    <a href="/reply/delete/all/${article.id}">
 	        전체 댓글 삭제
 	    </a>
@@ -117,7 +117,7 @@
            슈퍼관리자 혹은 관리자 라면 내가 쓰지 않은 게시글이라도 
            수정 및 삭제할 수 있다. -->
       <sec:authorize 
-        access="hasAnyRole('RL-20260414-000001', 'RL-20260414-000002')" 
+        access="hasAnyRole('RL-20260414-000004', 'RL-20260414-000005')" 
         var="isAdmin" />
       
       <sec:authorize access="isAuthenticated()">

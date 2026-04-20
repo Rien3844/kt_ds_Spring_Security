@@ -2,6 +2,7 @@ package com.ktdsuniversity.edu.config;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -26,6 +27,7 @@ import com.ktdsuniversity.edu.security.authenticate.handlers.LoginFailureHandler
 import com.ktdsuniversity.edu.security.authenticate.handlers.LoginSuccessHandler;
 import com.ktdsuniversity.edu.security.authenticate.service.SecurityPasswordEncoder;
 import com.ktdsuniversity.edu.security.authenticate.service.SecurityUserDetailsService;
+import com.ktdsuniversity.edu.security.providers.JsonWebTokenAuthenticationProvider;
 import com.ktdsuniversity.edu.security.providers.UsernameAndPasswordAuthenticationProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,6 +54,20 @@ public class HelloSpringConfiguration implements
 	@Autowired
 	private MembersDao membersDao;
 
+	// application.yml에서 관련된 정보를 가져온다.
+	// @Value = 환경설정 정보를 Bean 으로 가져오는 방법. 괄호에 환경설정 경로를 작성.
+	// @Value("${시작부터 가져오고자하는 것 까지의 경로}")
+	// @Value가 동작하는 조건 : @Component 가 적용된 클래스에서만 가능.
+	@Value("${app.jwt.secret-key}") 
+	private String jwtSecretKey;
+	@Value("${app.jwt.issuer}")
+	private String jwtIssuer;
+	
+	@Bean
+	JsonWebTokenAuthenticationProvider createJwtAuthenticationProvider() {
+		return new JsonWebTokenAuthenticationProvider(this.jwtSecretKey, this.jwtIssuer);
+	}
+	
 	// SecurityPasswordEncoder의 Bean을 생성한다.
 	@Bean // 메소드가 실행되어서 반환되는 객체를 Bean Container에 적재한다.
 	PasswordEncoder createPasswordEncoder() {

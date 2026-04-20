@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -15,8 +16,47 @@ import io.jsonwebtoken.security.Keys;
  */
 public class JsonWebTokenAuthenticationProvider {
 	
+	private String secretKey; // application.yml의 secret-key를 받을 String
+	private String issuer;    // application.yml의 issuer를 받을 String
+	
+	
+	
+	public JsonWebTokenAuthenticationProvider(String secretKey, String issuer) {
+		this.secretKey = secretKey;
+		this.issuer = issuer;
+	}
+
 	/**
-	 * 사용자의 이메일을 이용해 인증용 JWT 생성.
+	 * 사용자가 요청할 때마다 Request Header[Authorization]에 전달한
+	 * JsonWebToken을 가져와 복호화 시킨다.
+	 * 복호화 된 결과에서 사용자의 이메일(= identify)을 추출하여 반환시킨다.
+	 * 
+	 * @param jsonWebToken ==> 사용자가 전달한 토큰
+	 * @return jsonWebToken에서 추출한 사용자의 이메일
+	 */
+	public String decryptJsonWebToken(String jsonWebToken) {
+
+		// 암/복호화 키 생성
+		// SecretKey signKey = Keys.hmacShaKeyFor("application.yml에 작성한 비밀 키");
+		SecretKey signKey = Keys.hmacShaKeyFor(this.secretKey.getBytes());
+		
+		// Claims ==> 밑에 builder에서 해준 claims값만 가져오겠다. 
+		Claims claims = Jwts.parser()                        // JsonWebToken을 분석하기 위한 선언.
+							.verifyWith(signKey)             // JsonWebToken을 복호화 하기 위한 비밀키 지정.
+							.requireIssuer(this.issuer)   // 사용자가 전달한 JsonWebToken이 hello-spring 시스템에서 만든 것인지 확인한다.(최소한의 검증)
+							.build()                         // JsonWebToken 복호화 시작.
+							.parseSignedClaims(jsonWebToken) // 사용자가 전달한 jsonWebToken을. ==> 아래 builder 구조에서는 signKey
+							.getPayload();                   // 복호화 된 결과에서 claim들만 모아서 반환시킨다. ==> Map 형태.
+		
+		// 사용자가 전달한 JsonWebToken을 복호화 한 뒤 identify 값을 추출한다.
+		String email = claims.get("identify", String.class);
+		
+		return email;
+	}
+	
+	/**
+	 * 사용자의 이메일을 이용해 인증용 JWT 생성하고
+	 * 결과를 사용자에게 보내주어야 한다.
 	 * 
 	 * @param email - 사용자의 이메일
 	 * @param expiredAt - expireAt JWT의 유효기간 ( 지금으로부터 ~분(시간, 일, 월, 연) 까지 유효
@@ -31,13 +71,14 @@ public class JsonWebTokenAuthenticationProvider {
 		// 발행 날짜 시간 + expiredAt
 		Date expirationDate = new Date(issueDate.getTime() + expiredAt.toMillis());
 		
+		// 암/복호화 키 생성
 		// SecretKey signKey = Keys.hmacShaKeyFor("application.yml에 작성한 비밀 키");
-		SecretKey signKey = Keys.hmacShaKeyFor("sadn9xuin29dx29sd0x2fje9p2j90v40tafjdasjo22".getBytes());
+		SecretKey signKey = Keys.hmacShaKeyFor(this.secretKey.getBytes());
 		
 		String jsonWebToken = Jwts.builder()
 								  // JsonWebToken을 발행한 시스템의 이름
 								  // TODO aplication.yml에서 가져올것
-								  .issuer("hello-spring")
+								  .issuer(this.issuer)
 								  // JsonWebToken의 이름 작성
 								  .subject(email + "_token")
 								  // JsonWebToken에 포함되어야 할 회원의 정보'들' ==> .claim(key, value)
@@ -59,8 +100,12 @@ public class JsonWebTokenAuthenticationProvider {
 	}
 	
 	public static void main(String[] args) {
-		JsonWebTokenAuthenticationProvider jwtProvider = new JsonWebTokenAuthenticationProvider();
+		JsonWebTokenAuthenticationProvider jwtProvider = new JsonWebTokenAuthenticationProvider("sadn9xuin29dx29sd0x2fje9p2j90v40tafjdasjo22", "hello-spring");
 		String jwt = jwtProvider.makeJsonWebToken("test@gmail.com", Duration.ofHours(3));
 		System.out.println(jwt);
+		
+		// 복호화 진행
+		String email = jwtProvider.decryptJsonWebToken(jwt);
+		System.out.println(email);
 	}
 }

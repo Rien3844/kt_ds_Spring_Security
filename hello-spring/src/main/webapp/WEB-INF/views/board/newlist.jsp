@@ -16,7 +16,7 @@
             총 ${searchCount}개의 게시글이 검색되었습니다.
             <!-- 로그인 사용자가 "슈퍼 관리자" 
                  권한일 때 노출되도록 한다. -->
-            <sec:authorize access="hasRole('RL-20260414-000001')">
+            <sec:authorize access="hasRole('RL-20260414-000004')">
 	            <a href="/delete/all">
 	                전체 게시글 삭제
 	            </a>

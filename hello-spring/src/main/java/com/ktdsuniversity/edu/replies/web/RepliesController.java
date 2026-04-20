@@ -145,7 +145,7 @@ public class RepliesController {
 		return updateResult;
 	}
 	
-	@PreAuthorize("hasRole('RL-20260414-000001')")
+	@PreAuthorize("hasRole('RL-20260414-000004')")
 	@GetMapping("/reply/delete/all/{articleId}")
 	public String doDeleteAllRepliesByArticleId(@PathVariable String articleId) {
 		boolean deleteResult = this.repliesService.deleteAllRepliesByArticleId(articleId);
