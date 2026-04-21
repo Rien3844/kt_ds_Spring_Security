@@ -44,12 +44,17 @@ spring:
         # 개인정보 조회 요청을 하기 위해 인증 절차를 거치는 설정.
         registration:
         # 요청하는 oauth서비스를 식별할 수 있는 아이디 작성.
+          google:
+#            client-id: 
+#            client-secret: 
+            client-name: GOOGLE
+            scope: profile,email
           naver:
             # 인증 아이디와 인증 키 설정
             client-id: lN8dZd8MNztZ1iz2tNPu
             client-secret: QItDK5zAQV
             # 사용자의 네이버 로그인 콜백URL 지정(네이버 로그인의 결과)
-            redirect-uri: http://192.168.211.20:8080/login/oauth2/code/naver
+            redirect-uri: http://localhost:8080/login/oauth2/code/naver
             # 사용자의 네이버 로그인 인증 방식
             authorization-grant-type: authorization_code
             # 사용자로부터 받아올 데이터 설정

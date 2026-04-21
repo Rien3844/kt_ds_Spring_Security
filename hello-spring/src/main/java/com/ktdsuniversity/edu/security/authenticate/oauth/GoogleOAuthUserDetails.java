@@ -9,19 +9,20 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import com.ktdsuniversity.edu.members.vo.MembersVO;
 import com.ktdsuniversity.edu.security.user.SecurityUser;
 
-public class NaverOAuthUserDetails extends SecurityUser implements OAuth2User {
+public class GoogleOAuthUserDetails extends SecurityUser implements OAuth2User {
 
-	private static final long serialVersionUID = -4263057062513350423L;
-	
+	private static final long serialVersionUID = 7450388737410425482L;
+
 	private Map<String, Object> oAuthResult;
 	
-	public NaverOAuthUserDetails(MembersVO membersVO, Map<String, Object> oAuthResult) {
+	public GoogleOAuthUserDetails(MembersVO membersVO, Map<String, Object> oAuthResult) {
 		super(membersVO);
-		this.oAuthResult = (Map<String, Object>) oAuthResult.get("response");
+		this.oAuthResult = oAuthResult;
 		
-		membersVO.setEmail( this.oAuthResult.get("email").toString() );
-		membersVO.setName( this.oAuthResult.get("name").toString() );
+		membersVO.setEmail(this.oAuthResult.get("email").toString());
+		membersVO.setName(this.oAuthResult.get("name").toString());
 		
+
 		List<String> userRoles = new ArrayList<>();
 		userRoles.add("RL-20260414-000006");
 		membersVO.setRoles(userRoles);
@@ -35,7 +36,7 @@ public class NaverOAuthUserDetails extends SecurityUser implements OAuth2User {
 	public Map<String, Object> getAttributes() {
 		return this.oAuthResult;
 	}
-	
+
 	@Override
 	public String getName() {
 		return super.getMembersVO().getName();

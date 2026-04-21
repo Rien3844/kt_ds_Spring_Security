@@ -12,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -117,6 +120,12 @@ public class HelloSpringConfiguration implements
 				, this.createUserDetailsService());
 	}
 	
+	@Bean
+	OAuth2UserService<OAuth2UserRequest, OAuth2User> createOAuth2UserService(){
+		return new HelloSpringOAuthService(this.membersDao);
+	}
+	
+	
 	/**
 	 * 특정 URL에 대해서 Spring Security 가 개입하지 않도록 설정.
 	 * /WEB-INF/views 아래의 모든 jsp 파일들은 Spring Security의 간섭을 받지 않는다.
@@ -139,7 +148,7 @@ public class HelloSpringConfiguration implements
 		httpSecurity.oauth2Login(oauth2 -> oauth2.loginPage("/login")
 												 .defaultSuccessUrl("/", true)
 												 .userInfoEndpoint(
-													endpoint -> endpoint.userService(new HelloSpringOAuthService() )));
+													endpoint -> endpoint.userService(this.createOAuth2UserService() )));
 		
 		// 상대방이 내 서버로 접속할 수 있도록 허용하기
 		// ==> 내 서버로 접속 가능한 안전한 URL 등록하기
