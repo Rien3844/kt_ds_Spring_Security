@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,8 @@ import com.ktdsuniversity.edu.board.vo.request.UpdateVO;
 import com.ktdsuniversity.edu.board.vo.request.WriteVO;
 import com.ktdsuniversity.edu.board.vo.response.SearchResultVO;
 import com.ktdsuniversity.edu.common.utils.AuthUtils;
+import com.ktdsuniversity.edu.common.utils.ServletUtils;
+import com.ktdsuniversity.edu.exceptions.HelloSpringApiException;
 import com.ktdsuniversity.edu.exceptions.HelloSpringException;
 import com.ktdsuniversity.edu.files.dao.FilesDao;
 import com.ktdsuniversity.edu.files.helpers.MultipartFileHandler;
@@ -99,7 +102,13 @@ public class BoardServiceImpl implements BoardService {
 			
 			if (updateCount == 0) {
 				// 존재하지 않는 게시글을 조회하려 했다.
-				throw new HelloSpringException("존재하지 않는 게시글입니다.", "errors/404");
+				if(ServletUtils.isApiRequest()) {
+					throw new HelloSpringApiException("접근권한 오류"
+													 , HttpStatus.NOT_FOUND.value()
+													 , "존재하지 않는 게시글입니다.");
+				}else {
+					throw new HelloSpringException("존재하지 않는 게시글입니다.", "errors/404");
+				}
 			}
 		}
 		
@@ -111,7 +120,13 @@ public class BoardServiceImpl implements BoardService {
 			boolean isAdminAccount = AuthUtils.hasAnyRole("RL-20260414-000004", "RL-20260414-000005");
 			
 			if (!isAdminAccount && !loginUserEmail.equals(board.getEmail())) {
-				throw new HelloSpringException("잘못된 접근입니다.", "errors/403");
+				if(ServletUtils.isApiRequest()) {
+					throw new HelloSpringApiException("접근권한 오류"
+													 , HttpStatus.NOT_FOUND.value()
+													 , "존재하지 않는 게시글입니다.");
+				}else {
+					throw new HelloSpringException("잘못된 접근입니다.", "errors/403");
+				}
 			}
 		}
 		
@@ -129,7 +144,13 @@ public class BoardServiceImpl implements BoardService {
 		boolean isAdminAccount = AuthUtils.hasAnyRole("RL-20260414-000004", "RL-20260414-000005");
 		
 		if (!isAdminAccount && !loginUserEmail.equals(board.getEmail())) {
-			throw new HelloSpringException("잘못된 접근입니다.", "errors/403");
+			if(ServletUtils.isApiRequest()) {
+				throw new HelloSpringApiException("접근권한 오류"
+												 , HttpStatus.NOT_FOUND.value()
+												 , "존재하지 않는 게시글입니다.");
+			}else {
+				throw new HelloSpringException("잘못된 접근입니다.", "errors/403");
+			}
 		}
 		
 		int deleteCount = this.boardDao.deleteBoardById(id);
@@ -163,7 +184,13 @@ public class BoardServiceImpl implements BoardService {
 		boolean isAdminAccount = AuthUtils.hasAnyRole("RL-20260414-000004", "RL-20260414-000005");
 		
 		if (!isAdminAccount && !loginUserEmail.equals(board.getEmail())) {
-			throw new HelloSpringException("잘못된 접근입니다.", "errors/403");
+			if(ServletUtils.isApiRequest()) {
+				throw new HelloSpringApiException("접근권한 오류"
+												 , HttpStatus.NOT_FOUND.value()
+												 , "존재하지 않는 게시글입니다.");
+			}else {
+				throw new HelloSpringException("잘못된 접근입니다.", "errors/403");
+			}
 		}
 		
 		

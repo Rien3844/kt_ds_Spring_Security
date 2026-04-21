@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -106,6 +107,20 @@ public class HelloSpringConfiguration implements
 		return new JsonWebTokenAuthenticationFilter(
 				  this.createJwtAuthenticationProvider()
 				, this.createUserDetailsService());
+	}
+	
+	/**
+	 * 특정 URL에 대해서 Spring Security 가 개입하지 않도록 설정.
+	 * /WEB-INF/views 아래의 모든 jsp 파일들은 Spring Security의 간섭을 받지 않는다.
+	 * Controller에서 해당 페이지를 노출하려 할 때 "WEB-INF/views/.../*.jsp" 경로 사용시
+	 * 인증이 된 사용자에게만 노출시키려 하는 경우가 존재 ==> Spring Security가 개입하지 않도록 설정.
+	 *  
+	 * @return
+	 */
+	@Bean
+	WebSecurityCustomizer webSecurityCustomizer() {
+		return (web) -> web.ignoring()
+				.requestMatchers("/WEB-INF/views/**");
 	}
 	
 	// Spring Login Filter(BasicAuthenticationFilter) 등록.
