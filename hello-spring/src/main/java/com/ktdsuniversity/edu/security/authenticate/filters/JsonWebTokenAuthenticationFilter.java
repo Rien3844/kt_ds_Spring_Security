@@ -83,7 +83,7 @@ public class JsonWebTokenAuthenticationFilter extends OncePerRequestFilter {
 					writer.append("{ \"error\": \"인증이 필요하거나 잘못된 권한입니다.\" }");
 					writer.flush();
 					return;
-				}
+				}  
 				// email을 이용해 사용자의 정보와 권한을 조회한다.
 				UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
 				SecurityUser securityUser = (SecurityUser) userDetails;

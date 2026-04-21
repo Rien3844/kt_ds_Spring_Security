@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -52,8 +53,14 @@ public class HelloSpringConfiguration implements
 		// WebMvc 설정을 위한 Configuration
 		// @EnableWebMvc Annotation 에서 적용하는 기본 설정들을 변경하기 위함.
 		WebMvcConfigurer {
-
-	@Autowired
+	
+	
+	// 서버를 키면 에러뜨면서 서버가 죽는다.
+	// ==> 개발환경중에만 발생하는 에러
+	// @Autowired(required = false) : class가 없어도 에러가 발생하는 것을 방지.
+	// @Lazy : 인스턴스를 처음부터 불러오지 않고 필요할 때 불러오겠다.
+	@Autowired(required = false)
+	@Lazy
 	private MembersDao membersDao;
 
 	// application.yml에서 관련된 정보를 가져온다.
@@ -196,7 +203,6 @@ public class HelloSpringConfiguration implements
 							 .failureHandler(this.createLoginFailureHandler())
 		);
 		
-		// 10시 15분 시작.
 		return httpSecurity.build();
 	}
 

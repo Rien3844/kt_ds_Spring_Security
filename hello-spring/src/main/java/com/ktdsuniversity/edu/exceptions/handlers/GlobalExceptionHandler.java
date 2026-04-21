@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 		HttpServletResponse response = ServletUtils.getResponse();
 		if (ServletUtils.isApiRequest()) {
 			response.setCharacterEncoding("UTF-8");
-			response.setContentType("applicaiton/json");
+			response.setContentType("application/json");
 			
 			PrintWriter writer;
 			try {
