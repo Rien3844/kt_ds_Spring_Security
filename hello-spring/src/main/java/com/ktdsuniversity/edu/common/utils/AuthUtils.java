@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.ktdsuniversity.edu.members.vo.MembersVO;
+import com.ktdsuniversity.edu.security.user.SecurityUser;
 
 /**
  * Spring Security의 인증 및 권한을 편하게 체크할 수 있도록 해주는 유틸리티 클래스.
@@ -26,11 +27,17 @@ public abstract class AuthUtils {
 		if (isAuthenticated()) {
 			Authentication authentication = SecurityContextHolder.getContext()
 					 											 .getAuthentication();
-			return (MembersVO) authentication.getPrincipal();
+			Object principal = authentication.getPrincipal();
+			if (principal instanceof MembersVO member) {
+				return member;
+			}
+			else if (principal instanceof SecurityUser securityUser) {
+				return securityUser.getMembersVO();
+			}
 		}
 		return null;
 	}
-	
+
 	// Authentication 토큰에서 이메일을 가져오는 기능.
 	public static String getUsername() {
 		if (isAuthenticated()) {
@@ -55,10 +62,3 @@ public abstract class AuthUtils {
 	}
 	
 }
-
-
-
-
-
-
-

@@ -23,6 +23,7 @@ import com.ktdsuniversity.edu.board.vo.request.SearchListVO;
 import com.ktdsuniversity.edu.board.vo.request.UpdateVO;
 import com.ktdsuniversity.edu.board.vo.request.WriteVO;
 import com.ktdsuniversity.edu.board.vo.response.SearchResultVO;
+import com.ktdsuniversity.edu.common.utils.AuthUtils;
 import com.ktdsuniversity.edu.exceptions.HelloSpringApiException;
 import com.ktdsuniversity.edu.members.vo.MembersVO;
 
@@ -69,7 +70,7 @@ public class BoardApiController {
 											, bindingResult.getFieldError());
 		}
 		
-		MembersVO loginUser = (MembersVO) authentication.getPrincipal();
+		MembersVO loginUser = AuthUtils.getPrincipal();
 
 		writeVO.setEmail(loginUser.getEmail());
 		
@@ -133,7 +134,7 @@ public class BoardApiController {
 		
 		updateVO.setId(articleId);
 		
-		MembersVO loginUser = (MembersVO) authentication.getPrincipal();
+		MembersVO loginUser = AuthUtils.getPrincipal();
 		updateVO.setEmail(loginUser.getEmail());
 		
 		boolean updateResult = this.boardService.updateBoardByArticleId(updateVO);

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ktdsuniversity.edu.common.utils.AuthUtils;
 import com.ktdsuniversity.edu.exceptions.HelloSpringApiException;
 import com.ktdsuniversity.edu.members.vo.MembersVO;
 import com.ktdsuniversity.edu.replies.service.RepliesService;
@@ -58,7 +59,7 @@ public class RepliesController {
 			throw new HelloSpringApiException("파라미터가 충분하지 않습니다.", HttpStatus.BAD_REQUEST.value(), errors);
 		}
 		
-		MembersVO loginUser = (MembersVO) authentication.getPrincipal();
+		MembersVO loginUser = AuthUtils.getPrincipal();
 		createVO.setEmail(loginUser.getEmail());
 		
 		logger.debug("reply: {}", createVO.getReply());
@@ -88,7 +89,7 @@ public class RepliesController {
 			throw new HelloSpringApiException("파라미터가 충분하지 않습니다.", HttpStatus.BAD_REQUEST.value(), errors);
 		}
 		
-		MembersVO loginUser = (MembersVO) authentication.getPrincipal();
+		MembersVO loginUser = AuthUtils.getPrincipal();
 		createVO.setEmail(loginUser.getEmail());
 		
 		logger.debug("reply: {}", createVO.getReply());

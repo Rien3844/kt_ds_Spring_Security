@@ -33,6 +33,13 @@
 	</properties>
 	<dependencies>
 
+		<!-- Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-client -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-oauth2-client</artifactId>
+		    <scope>compile</scope>
+		</dependency>
+
 		<!-- Spring Security를 위한 JSTL 라이브러리. -->
 		<!-- Spring Security로 인증받은 토큰을 통해, JSP에서 인증/권한 제어 목적 -->
 		<!-- Source:

@@ -63,7 +63,6 @@ public class GlobalExceptionHandler {
 			if (AuthUtils.isAuthenticated()) {
 				viewPath = "/WEB-INF/views/errors/403.jsp";
 				request.setAttribute("errorMessage", "잘못된 접근입니다. 권한이 충분하지 않습니다.");
-				return;
 			}
 			
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(viewPath);

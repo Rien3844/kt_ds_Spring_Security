@@ -23,6 +23,7 @@ import com.ktdsuniversity.edu.board.vo.request.SearchListVO;
 import com.ktdsuniversity.edu.board.vo.request.UpdateVO;
 import com.ktdsuniversity.edu.board.vo.request.WriteVO;
 import com.ktdsuniversity.edu.board.vo.response.SearchResultVO;
+import com.ktdsuniversity.edu.common.utils.AuthUtils;
 import com.ktdsuniversity.edu.members.vo.MembersVO;
 
 import jakarta.validation.Valid;
@@ -83,7 +84,7 @@ public class BoardController {
 			return "board/write";
 		}
 		
-		MembersVO loginUser = (MembersVO) authentication.getPrincipal();
+		MembersVO loginUser = AuthUtils.getPrincipal();
 		// 로그인 데이터(__LOGIN_DATA__)에서 로그인 한 사용자의 이메일을 가져온다.
 		writeVO.setEmail(loginUser.getEmail());
 		
@@ -160,7 +161,7 @@ public class BoardController {
 		
 		updateVO.setId(articleId);
 		
-		MembersVO loginUser = (MembersVO) authentication.getPrincipal();
+		MembersVO loginUser = AuthUtils.getPrincipal();
 		updateVO.setEmail(loginUser.getEmail());
 		
 		boolean updateResult = this.boardService.updateBoardByArticleId(updateVO);

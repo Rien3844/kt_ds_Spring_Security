@@ -29,6 +29,7 @@ import com.ktdsuniversity.edu.members.dao.MembersDao;
 import com.ktdsuniversity.edu.security.authenticate.filters.JsonWebTokenAuthenticationFilter;
 import com.ktdsuniversity.edu.security.authenticate.handlers.LoginFailureHandler;
 import com.ktdsuniversity.edu.security.authenticate.handlers.LoginSuccessHandler;
+import com.ktdsuniversity.edu.security.authenticate.oauth.HelloSpringOAuthService;
 import com.ktdsuniversity.edu.security.authenticate.service.SecurityPasswordEncoder;
 import com.ktdsuniversity.edu.security.authenticate.service.SecurityUserDetailsService;
 import com.ktdsuniversity.edu.security.providers.JsonWebTokenAuthenticationProvider;
@@ -134,6 +135,11 @@ public class HelloSpringConfiguration implements
 	// Spring Security의 기본 로그인 절차를 수정하는 작업.
 	@Bean
 	SecurityFilterChain configureFilterChain(HttpSecurity httpSecurity) {
+		
+		httpSecurity.oauth2Login(oauth2 -> oauth2.loginPage("/login")
+												 .defaultSuccessUrl("/", true)
+												 .userInfoEndpoint(
+													endpoint -> endpoint.userService(new HelloSpringOAuthService() )));
 		
 		// 상대방이 내 서버로 접속할 수 있도록 허용하기
 		// ==> 내 서버로 접속 가능한 안전한 URL 등록하기

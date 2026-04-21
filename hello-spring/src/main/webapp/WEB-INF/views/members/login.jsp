@@ -46,6 +46,7 @@
         <div class="btn-group">
           <div class="right-align">
             <input type="submit" value="로그인" />
+            <a href="/oauth2/authorization/naver">Naver로 시작하기</a>
           </div>
         </div>
       </div>
